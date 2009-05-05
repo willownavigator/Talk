@@ -1,4 +1,4 @@
-<project name="sngclp" default="dist" basedir=".">
+<project name="talk" default="dist" basedir=".">
     <description>
         Simple Webcam sharing project.
     </description>
