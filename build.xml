@@ -1,6 +1,6 @@
 <project name="sngclp" default="dist" basedir=".">
     <description>
-        Set of tools available to song writers to aid in the song writing process. 
+        Simple Webcam sharing project.
     </description>
 
     <property name="build" location="build" />
