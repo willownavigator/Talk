@@ -1,0 +1,79 @@
+<project name="sngclp" default="dist" basedir=".">
+    <description>
+        Set of tools available to song writers to aid in the song writing process. 
+    </description>
+
+    <property name="build" location="build" />
+    <property name="red5" location="/usr/lib/red5/" />
+    <property name="webapps" location="${red5}/webapps" />
+    <property name="mxmlc" location="/Users/stevengravell/src/flex/bin/mxmlc" />
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}" />
+    </target>
+
+    <target name="dist" depends="init,dist-red5,dist-flex">
+        
+    </target>
+
+
+    <target name="init-dist-red5">
+        <mkdir dir="${webapps}/talk" />
+        <mkdir dir="${webapps}/talk/WEB-INF" />
+    </target>
+
+    <target name="dist-red5" depends="init-dist-red5,red5">
+        <!-- classes -->
+        <copy todir="${webapps}/talk/WEB-INF/classes/">
+            <fileset dir="${build}/classes/talk/" />
+        </copy>
+        <!-- libs -->
+        <copy todir="${webapps}/talk/WEB-INF/lib/">
+            <fileset dir="java/talk/lib/" />
+        </copy>
+        <!-- confs -->
+        <copy todir="${webapps}/talk/WEB-INF/">
+            <fileset dir="java/talk/src/etc/">
+                <include name="*.*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="init-red5" depends="init">
+        <mkdir dir="${build}/classes"/>
+        <mkdir dir="${build}/classes/talk"/>
+    </target>
+
+    <target name="red5" depends="init-red5">
+        <!-- todo: I guess ivy is the thing I need for dealing with classpath dependancies? -->
+        <javac srcdir="java/talk/src/" destdir="${build}/classes/talk"
+            classpath="${red5}/red5.jar
+                      :${red5}/lib/commons-logging-1.1.1.jar
+                      :/usr/local/lib/libthrift.jar" /> 
+    </target>
+
+    <target name="init-flex" depends="init">
+        <mkdir dir="${build}/flex"/>
+    </target>
+
+    <target name="dist-flex" depends="flex">
+        <copy todir="www/static/">
+            <fileset dir="${build}/flex">
+                <include name="*.swf" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Flex depends on the latest Red5 webapp distribution -->
+    <target name="flex" depends="init-flex">
+        <!-- todo: install flex properly -->
+        <exec dir="flex/" executable="${mxmlc}">
+            <arg line="-o ${build}/flex/talk.swf talk.mxml" />
+        </exec>
+    </target>
+
+</project>
